@@ -1,8 +1,6 @@
 import React, { Fragment, useState } from 'react';
 
 import Header from 'Components/Header/Header';
-// import Input from 'Components/Input/Input';
-import Button from 'Components/Button/Button';
 import Result from 'Components/Result/Result';
 
 import wasmModule from 'Scripts/wasmModule';
@@ -23,7 +21,7 @@ export default function ({ title }) {
             <Header title={title} />
             <input type="number" name="input1" id="input1" ref={val1Ref} />
             <input type="number" name="input2" id="input2" ref={val2Ref} />
-            <Button add={() => cppExports.add(parseInt(val1Ref.current.value), parseInt(val2Ref.current.value))} />
+            <button onClick={() => cppExports.add(parseInt(val1Ref.current.value), parseInt(val2Ref.current.value))}>Add</button>
             <Result result={result} />
         </Fragment>
     )

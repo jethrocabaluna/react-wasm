@@ -24,7 +24,7 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 options: {
-                    presets: ['react', 'env', 'es2015'],
+                    presets: ['react', 'env', 'es2015', 'stage-0'],
                     plugins: ['babel-plugin-webpack-alias']
                 }
             },
@@ -43,8 +43,13 @@ module.exports = {
                     options: {
                         emccFlags: [
                             '-s',
-                            'ERROR_ON_UNDEFINED_SYMBOLS=0'
-                        ]
+                            'ERROR_ON_UNDEFINED_SYMBOLS=0',
+                            '-s',
+                            'USE_PTHREADS=1',
+                            '-s',
+                            'PTHREAD_POOL_SIZE=2'
+                        ],
+                        fullEnv: true
                     }
                 }
             },
@@ -52,6 +57,10 @@ module.exports = {
                 test: /\.mjs$/,
                 include: /node_modules/,
                 type: "javascript/auto",
+            },
+            {
+                test: /\.wasm$/,
+                type: "javascript/auto"
             }
         ]
     },

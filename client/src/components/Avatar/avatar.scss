@@ -1,0 +1,43 @@
+.avatar {
+    height: 150px;
+    width: 150px;
+
+    &__image {
+        height: 125px;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    &__name {
+        font-size: 16px;
+        text-align: center;
+    }
+}
+
+.theme {
+    &--light {
+        .avatar__name {
+            color: $dark;
+        }
+    }
+
+    &--dark {
+        .avatar__name {
+            color: $light;
+        }
+    }
+
+    &--red {
+        .avatar__name {
+            color: $light;
+        }
+    }
+
+    &--blue {
+        .avatar__name {
+            color: $light;
+        }
+    }
+}

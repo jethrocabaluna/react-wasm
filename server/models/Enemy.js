@@ -2,7 +2,7 @@ const keystone = require('keystone');
 const Types = keystone.Field.Types;
 const path = require('path');
 
-const Image = new keystone.List('Image', {
+const Enemy = new keystone.List('Enemy', {
     autokey: { path: 'slug', from: 'name', unique: true },
     defaultSort: '-createdAt'
 });
@@ -10,27 +10,24 @@ const Image = new keystone.List('Image', {
 const imageStoreage = new keystone.Storage({
     adapter: keystone.Storage.Adapters.FS,
     fs: {
-        path: keystone.expandPath('server/public/img'),
+        path: keystone.expandPath('server/public/img/enemies'),
         generateFilename: function(file, index) {
             return file.originalname;
         },
         whenExists: 'error',
-        publicPath: '/public/img'
+        publicPath: '/public/img/enemies'
     }
 });
 
-Image.add({
+Enemy.add({
     name: {
         type: String,
         required: true
     },
-    color: {
-        type: String,
-        hidden: true
-    },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        hidden: true
     },
     image: {
         type: Types.File,
@@ -40,7 +37,22 @@ Image.add({
     description: {
         type: Types.Textarea,
         height: 300
+    },
+    health: {
+        type: Types.Number,
+        required: true,
+        default: 10
+    },
+    damage: {
+        type: Types.Number,
+        required: true,
+        default: 1
+    },
+    speed: {
+        type: Types.Number,
+        required: true,
+        default: 1
     }
 });
 
-Image.register();
+Enemy.register();
