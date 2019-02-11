@@ -2,8 +2,8 @@ import { useReducer } from 'react';
 
 function statusReducer(state, action) {
     switch (action.type) {
-        case 'restart':
-            return initStatus;
+        case 'respawn':
+            return { ...action.payload, life: state.life - 1 };
         case 'hurt':
             return { ...state, health: state.health - action.payload };
         case 'attackUp':
@@ -23,16 +23,20 @@ function statusReducer(state, action) {
     }
 }
 
-export default function (name, initStatus) {
+export default function (name, { health, damage, speed, hasShield = false, score = 0, life = 0 }) {
+    const initStatus = { health, damage, speed, hasShield, score, life };
     const [status, statusDispatch] = useReducer(statusReducer, initStatus);
 
     function destroy(name) {
         console.log(`killed a ${name}!`);
+        if (status.life !== 0) {
+            statusDispatch({type: 'respawn', payload: initStatus});
+        }
     }
 
     function hurt(damage) {
+        if (status.life === 0 && status.health <= 0) return;
         statusDispatch({type: 'hurt', payload: damage});
-        console.log(statusDispatch);
     }
 
     if (status.health <= 0) {

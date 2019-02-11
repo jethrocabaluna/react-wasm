@@ -13,22 +13,14 @@ const initStatus = {
 export const PlayerStatusContext = React.createContext([initStatus, () => {}])
 
 export default function ({ name, updateStatusDisplay }) {
-    const [status, setStatus] = useState(initStatus);
-    const playerStatus = Living(name, status);
-    // console.log(status);
-    // console.log(playerStatus.status);
-
-    // useEffect(() => {
-    //     updateStatusDisplay(status);
-    // }, []);
+    const player = Living(name, initStatus);
 
     useEffect(() => {
-        updateStatusDisplay(playerStatus.status);
-    }, [status]);
+        updateStatusDisplay(player.status);
+    });
 
     function takeDamage(damage) {
-        playerStatus.hurt(damage);
-        setStatus(playerStatus.status);
+        player.hurt(damage);
     }
 
     return (

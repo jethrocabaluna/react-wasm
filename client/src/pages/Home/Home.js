@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Header from 'Components/Header/Header';
 import PlayerInfo from 'Components/PlayerInfo/PlayerInfo';
 import Player from 'Components/Player/Player';
+import Enemy from 'Components/Enemy/Enemy';
 
 const OBJECTS_QUERY = '{enemies {name,image,description,health,damage,speed} powerUps {name,description,color,effect}}';
 
@@ -27,8 +28,9 @@ export default function () {
     },[]);
 
     function updateStatusDisplay(status) {
-        // console.log(status);
-        setStatusDisplay(status);
+        if (statusDisplay !== status) {
+            setStatusDisplay(status);
+        }
     }
 
     return (
@@ -36,6 +38,11 @@ export default function () {
             <Header title="The Game" />
             <PlayerInfo {...statusDisplay} />
             <Player name="Jethro" updateStatusDisplay={updateStatusDisplay} />
+            {
+                enemies.map((enemy, i) => {
+                    return <Enemy key={`${enemy.name}-${i}`} {...enemy} />;
+                })
+            }
             <canvas id="gameCanvas">
             </canvas>
             <button className="start-button" onClick={() => setStart(true)}>Start</button>
