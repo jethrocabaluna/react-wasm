@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import Living from 'Components/HOC/Living/Living';
-import { CanvasManager } from '../Canvas/Canvas';
-// import { CanvasManager } from 'Components/Canvas/Canvas';
-
-// const cmgr = new CanvasManager();
-// let canvasManager = null;
 
 export default React.memo(function ({ name, description, health, damage, speed, image, canvas }) {
     const enemy = Living(name, { health, damage, speed });
@@ -39,11 +34,9 @@ export default React.memo(function ({ name, description, health, damage, speed, 
     }
 
     return (
-        <button
-        className="enemy"
-        onClick={() => takeDamage(2)}>
-            <span>{name}</span>
+        <div
+        className={enemy.status.health <= 0 && enemy.status.life <= 0 ? "enemy unit" : "enemy unit alive"}>
             <img src={image ? `enemies/${image.filename}` : 'http://cdn.onlinewebfonts.com/svg/img_571231.png'} alt="enemy icon"/>
-        </button>
+        </div>
     )
 })

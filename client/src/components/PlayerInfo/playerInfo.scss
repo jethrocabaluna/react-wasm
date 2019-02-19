@@ -1,3 +1,10 @@
 .player-info {
-    margin-bottom: 30px;
+    background-color: darkblue;
+    padding: 20px;
+    border: 3px solid gold;
+
+    &__status {
+        color: gold;
+        font-size: 20px;
+    }
 }

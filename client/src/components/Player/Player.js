@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Living from 'Components/HOC/Living/Living';
 
 const initStatus = {
-    health: 50,
+    health: 25,
     damage: 2,
     speed: 6,
-    life: 3,
+    life: 2,
     hasShield: false,
     score: 0
 }
@@ -40,10 +40,10 @@ export default function ({ name, updateStatusDisplay, canvas }) {
     }
 
     return (
-        <button
+        <div
         id="player"
-        onClick={() => takeDamage(1)}>
-            Player
-        </button>
+        className={player.status.health <= 0 && player.status.life <= 0 ? "unit" : "unit alive"}>
+            <img src="http://localhost:3000/player.png" alt="player icon" />
+        </div>
     )
 }

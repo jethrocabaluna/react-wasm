@@ -29,7 +29,6 @@ export default function () {
             .then(data => {
                 setEnemies(data.data.enemies);
                 setPowerUps(data.data.powerUps);
-                console.log(data.data);
             });
     },[]);
 
@@ -66,21 +65,25 @@ export default function () {
         <div className="home">
             <Header title="The Game" />
             <PlayerInfo {...statusDisplay} />
-            <Canvas onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-            <Player name={playerName} updateStatusDisplay={updateStatusDisplay} canvas={canvasManager} />
-            {
-                enemies.map((enemy, i) => {
-                    return <Enemy key={`${enemy.name}-${i}`} canvas={canvasManager} {...enemy} name={`${enemy.name}-${i}`} />;
-        })
-    }
-            {
-                canvasManager ? '' : <button className="start-button" onClick={startCanvasManager}>Start</button>
-            }
-            <Enemy key='enemy-1' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-1' />
-            <Enemy key='enemy-2' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-2' />
-            <Enemy key='enemy-3' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-3' />
-            <Enemy key='enemy-4' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-4' />
-            <Enemy key='enemy-5' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-5' />
+            <div className="game-container">
+                <Canvas onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+                {
+                    canvasManager ? '' : <button className="start-button" onClick={startCanvasManager}>Start</button>
+                }
+                <div className="game-container__units">
+                    <Player name={playerName} updateStatusDisplay={updateStatusDisplay} canvas={canvasManager} />
+                    {
+                        enemies.map((enemy, i) => {
+                            return <Enemy key={`${enemy.name}-${i}`} canvas={canvasManager} {...enemy} name={`${enemy.name}-${i}`} />;
+                        })
+                    }
+                    <Enemy key='enemy-1' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-1' />
+                    <Enemy key='enemy-2' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-2' />
+                    <Enemy key='enemy-3' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-3' />
+                    <Enemy key='enemy-4' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-4' />
+                    <Enemy key='enemy-5' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-5' />
+                </div>
+            </div>
         </div>
     )
 }

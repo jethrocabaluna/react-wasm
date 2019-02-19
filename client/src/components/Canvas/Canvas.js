@@ -43,7 +43,7 @@ export const CanvasManager = function () {
     }
 
     function getPosition({x, y}) {
-        let pos_x = x ? x : (Math.random() * (canvas.width - unitSize));
+        let pos_x = x ? x : (Math.random() * (canvas.width - unitSize - 5) + 5);
         let pos_y = y ? y : (Math.random() * (canvas.height / 2 - unitSize));
 
         for (let name in units) {
@@ -63,6 +63,8 @@ export const CanvasManager = function () {
         destroyUnit(name);
         cancelAnimationFrame(units[name].unitMovementId);
         units[name].unitMovementId = null;
+        delete units[name];
+        delete bullets[name];
     }
 
     function destroyUnit(name) {
@@ -86,7 +88,7 @@ export const CanvasManager = function () {
             }
             units[name].x = new_x;
             drawUnit(name);
-            if (units[name].isEnemy && Math.abs(units[name].x - units['Jethro'].x) < unitSize && (!bullets[name] || !bullets[name][bullets[name].length - 1].bulletAnimationId)) {
+            if (units[name].isEnemy && units['Jethro'] && Math.abs(units[name].x - units['Jethro'].x) < unitSize && (!bullets[name] || !bullets[name][bullets[name].length - 1].bulletAnimationId)) {
                 shoot(name, units[name].damage);
             }
             units[name].unitMovementId = requestAnimationFrame(() => moveUnit(name, direction));
@@ -146,7 +148,7 @@ export const CanvasManager = function () {
 
     function checkBulletCollision(bullet) {
         for (let name in units) {
-            if (bullet.x >= units[name].x && bullet.x <= units[name].x + unitSize && Math.abs(bullet.y - (units[name].y + (bullet.fromEnemy ? 0 : unitSize))) <= bulletHitGap) {
+            if (bullet.x >= units[name].x && bullet.x <= units[name].x + unitSize && (Math.abs(bullet.y - units['Jethro'].y) <= bulletHitGap && name === 'Jethro' && units['Jethro'] || (Math.abs(bullet.y - (units[name].y + unitSize)) <= bulletHitGap && !bullet.fromEnemy))) {
                 console.log(`${name} got hit!`);
                 units[name].hurt(bullet.damage);
                 return true;
