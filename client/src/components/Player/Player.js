@@ -23,15 +23,18 @@ export default function ({ name, updateStatusDisplay, canvas }) {
     }
 
     if (player.status.health <= 0 && player.status.life <= 0) {
-        canvas.destroyUnit(name);
+        canvas.removeUnit(name);
     }
 
     if (canvas && !onGame) {
         canvas.displayUnit({
             name,
             speed: player.status.speed,
+            damage: player.status.damage,
             x: 375,
-            y: 525
+            y: 525,
+            imageSource: 'http://localhost:3000/player.png',
+            hurt: (damage) => takeDamage(damage)
         });
         setOnGame(true);
     }

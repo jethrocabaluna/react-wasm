@@ -17,6 +17,8 @@ export default function () {
     const [statusDisplay, setStatusDisplay] = useState({});
     const [canvasManager, setCanvasManager] = useState(null);
 
+    let onMove = false;
+
     useEffect(() => {
         fetch('http://localhost:3000/graphql', {
             method: 'POST',
@@ -42,12 +44,21 @@ export default function () {
     }
 
     function handleKeyDown(e) {
-        if (e.keyCode === 37) {
-            canvasManager.moveUnit(playerName, 'left');
-        } else if (e.keyCode === 39) {
-            canvasManager.moveUnit(playerName, 'right');
+        if (e.keyCode === 37 && !onMove) {
+            onMove = true;
+            canvasManager.handleMovement(playerName, 'left');
+        } else if (e.keyCode === 39 && !onMove) {
+            onMove = true;
+            canvasManager.handleMovement(playerName, 'right');
         } else if (e.keyCode === 32) {
-            canvasManager.shoot(playerName);
+            canvasManager.shoot(playerName, statusDisplay.damage);
+        }
+    }
+
+    function handleKeyUp(e) {
+        if (e.keyCode === 37 || e.keyCode === 39) {
+            onMove = false;
+            canvasManager.handleMovement(playerName, 'stop');
         }
     }
 
@@ -55,7 +66,7 @@ export default function () {
         <div className="home">
             <Header title="The Game" />
             <PlayerInfo {...statusDisplay} />
-            <Canvas onKeyDown={handleKeyDown} />
+            <Canvas onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
             <Player name={playerName} updateStatusDisplay={updateStatusDisplay} canvas={canvasManager} />
             {
                 enemies.map((enemy, i) => {
@@ -65,6 +76,11 @@ export default function () {
             {
                 canvasManager ? '' : <button className="start-button" onClick={startCanvasManager}>Start</button>
             }
+            <Enemy key='enemy-1' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-1' />
+            <Enemy key='enemy-2' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-2' />
+            <Enemy key='enemy-3' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-3' />
+            <Enemy key='enemy-4' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-4' />
+            <Enemy key='enemy-5' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-5' />
         </div>
     )
 }

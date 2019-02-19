@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Living from 'Components/HOC/Living/Living';
+import { CanvasManager } from '../Canvas/Canvas';
 // import { CanvasManager } from 'Components/Canvas/Canvas';
 
 // const cmgr = new CanvasManager();
@@ -15,16 +16,25 @@ export default React.memo(function ({ name, description, health, damage, speed, 
         enemy.hurt(damage);
     }
 
+    function startMoving() {
+        let direction = Math.random() > 0.5 ? 'right' : 'left';
+        canvas.handleMovement(name, direction);
+    }
+
     if (enemy.status.health <= 0 && enemy.status.life <= 0) {
-        canvas.destroyUnit(name);
+        canvas.removeUnit(name);
     }
 
     if (canvas && !onGame) {
         canvas.displayUnit({
             name,
             speed,
-            imageSource: `http://localhost:3000/enemies/${image.filename}`
+            imageSource: image ? `http://localhost:3000/enemies/${image.filename}` : 'http://cdn.onlinewebfonts.com/svg/img_571231.png',
+            hurt: (damage) => takeDamage(damage),
+            enemy: true,
+            damage
         });
+        startMoving();
         setOnGame(true);
     }
 
@@ -33,7 +43,7 @@ export default React.memo(function ({ name, description, health, damage, speed, 
         className="enemy"
         onClick={() => takeDamage(2)}>
             <span>{name}</span>
-            <img src={`enemies/${image.filename}`} alt="enemy icon"/>
+            <img src={image ? `enemies/${image.filename}` : 'http://cdn.onlinewebfonts.com/svg/img_571231.png'} alt="enemy icon"/>
         </button>
     )
 })
