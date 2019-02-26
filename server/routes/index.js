@@ -19,6 +19,7 @@ exports = module.exports = app => {
     app.get('/api/images/list', keystone.middleware.api, routes.api.images.list);
     app.get('/api/enemies/list', keystone.middleware.api, routes.api.enemies.list);
     app.get('/api/powerUps/list', keystone.middleware.api, routes.api.powerUps.list);
+    app.get('/api/levels/list', keystone.middleware.api, routes.api.levels.list);
 
     app.get('*', routes.views.index);
 }

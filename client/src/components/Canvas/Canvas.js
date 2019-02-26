@@ -4,7 +4,7 @@ export default function ({ onKeyDown, onKeyUp }) {
     return <canvas id="game-canvas" tabIndex="1" onKeyDown={onKeyDown} onKeyUp={onKeyUp}></canvas>;
 }
 
-export const CanvasManager = function () {
+export const CanvasManager = function (playerName, levelManager) {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 800;
@@ -16,6 +16,8 @@ export const CanvasManager = function () {
     const bulletSize = 10;
     const bulletSpeed = 10;
     const bulletHitGap = 5;
+
+    let currentLevel = 0;
 
     function displayUnit({name, speed, imageSource, x, y, hurt, enemy, damage}) {
         if (!imageSource) return;
@@ -65,6 +67,12 @@ export const CanvasManager = function () {
         units[name].unitMovementId = null;
         delete units[name];
         delete bullets[name];
+
+        if (Object.keys(units).length === 1 && units[playerName] && currentLevel < levelManager.finalLevel) {
+            console.log(units);
+            console.log('Level finished');
+            levelManager.nextLevel(++currentLevel);
+        }
     }
 
     function destroyUnit(name) {
@@ -88,7 +96,7 @@ export const CanvasManager = function () {
             }
             units[name].x = new_x;
             drawUnit(name);
-            if (units[name].isEnemy && units['Jethro'] && Math.abs(units[name].x - units['Jethro'].x) < unitSize && (!bullets[name] || !bullets[name][bullets[name].length - 1].bulletAnimationId)) {
+            if (units[name].isEnemy && units[playerName] && Math.abs(units[name].x - units[playerName].x) < unitSize && (!bullets[name] || !bullets[name][bullets[name].length - 1].bulletAnimationId)) {
                 shoot(name, units[name].damage);
             }
             units[name].unitMovementId = requestAnimationFrame(() => moveUnit(name, direction));
@@ -120,7 +128,7 @@ export const CanvasManager = function () {
             bullet.bulletAnimationId = null;
             destroyBullet(bullet);
         } else {
-            requestAnimationFrame(() => moveBullet(bullet));
+            bullet.bulletAnimationId = requestAnimationFrame(() => moveBullet(bullet));
         }
     }
 
@@ -148,7 +156,7 @@ export const CanvasManager = function () {
 
     function checkBulletCollision(bullet) {
         for (let name in units) {
-            if (bullet.x >= units[name].x && bullet.x <= units[name].x + unitSize && (Math.abs(bullet.y - units['Jethro'].y) <= bulletHitGap && name === 'Jethro' && units['Jethro'] || (Math.abs(bullet.y - (units[name].y + unitSize)) <= bulletHitGap && !bullet.fromEnemy))) {
+            if (bullet.x >= units[name].x && bullet.x <= units[name].x + unitSize && (Math.abs(bullet.y - units[playerName].y) <= bulletHitGap && name === playerName && units[playerName] || (Math.abs(bullet.y - (units[name].y + unitSize)) <= bulletHitGap && !bullet.fromEnemy))) {
                 console.log(`${name} got hit!`);
                 units[name].hurt(bullet.damage);
                 return true;

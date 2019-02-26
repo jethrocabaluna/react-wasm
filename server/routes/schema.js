@@ -39,6 +39,18 @@ const PowerUpType = new GraphQLObjectType({
     })
 });
 
+const LevelType = new GraphQLObjectType({
+    name: 'Level',
+    fields: () => ({
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        levelNumber: { type: GraphQLInt },
+        fascist: { type: GraphQLInt },
+        hitler: { type: GraphQLInt },
+        weakling: { type: GraphQLInt }
+    })
+});
+
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
@@ -62,6 +74,14 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(PowerUpType),
             resolve(parent, args) {
                 return fetch('http://localhost:3000/api/powerUps/list')
+                    .then(res => res.json())
+                    .then(data => data);
+            }
+        },
+        levels: {
+            type: new GraphQLList(LevelType),
+            resolve(parent, args) {
+                return fetch('http://localhost:3000/api/levels/list')
                     .then(res => res.json())
                     .then(data => data);
             }

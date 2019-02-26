@@ -6,7 +6,7 @@ import Canvas, { CanvasManager } from 'Components/Canvas/Canvas';
 import Player from 'Components/Player/Player';
 import Enemy from 'Components/Enemy/Enemy';
 
-const OBJECTS_QUERY = '{enemies {name,image,description,health,damage,speed} powerUps {name,description,color,effect}}';
+const OBJECTS_QUERY = '{enemies {name,image,description,health,damage,speed} powerUps {name,description,color,effect} levels {name,description,levelNumber,fascist,hitler,weakling}}';
 
 const playerName = 'Jethro';
 
@@ -14,10 +14,16 @@ export default function () {
     const [start, setStart] = useState(false);
     const [enemies, setEnemies] = useState([]);
     const [powerUps, setPowerUps] = useState([]);
+    const [levels, setLevels] = useState([]);
+    const [currentLevel, setCurrentLevel] = useState(0);
     const [statusDisplay, setStatusDisplay] = useState({});
     const [canvasManager, setCanvasManager] = useState(null);
+    const [onMove, setOnMove] = useState(false);
 
-    let onMove = false;
+    const levelManager = {
+        finalLevel: levels.length - 1,
+        nextLevel: (num) => setCurrentLevel(num)
+    }
 
     useEffect(() => {
         fetch('http://localhost:3000/graphql', {
@@ -29,6 +35,7 @@ export default function () {
             .then(data => {
                 setEnemies(data.data.enemies);
                 setPowerUps(data.data.powerUps);
+                setLevels(data.data.levels);
             });
     },[]);
 
@@ -38,16 +45,34 @@ export default function () {
         }
     }
 
+    console.log('outside: ' + currentLevel);
+
+    function displayEnemies() {
+        if (levels.length && start && currentLevel < levels.length) {
+            const enemyElements = [];
+            enemies.map(enemy => {
+                if (levels[currentLevel][enemy.name]) {
+                    for (let i = 0; i < levels[currentLevel][enemy.name]; i++) {
+                        enemyElements.push(<Enemy key={`${enemy.name}-${currentLevel}-${i}`} canvas={canvasManager} {...enemy} name={`${enemy.name}-${currentLevel}-${i}`} />);
+                    }
+                }
+            })
+
+            return enemyElements;
+        }
+    }
+
     function startCanvasManager() {
-        setCanvasManager(new CanvasManager());
+        setCanvasManager(new CanvasManager(playerName, levelManager));
+        setStart(true);
     }
 
     function handleKeyDown(e) {
         if (e.keyCode === 37 && !onMove) {
-            onMove = true;
+            setOnMove(true);
             canvasManager.handleMovement(playerName, 'left');
         } else if (e.keyCode === 39 && !onMove) {
-            onMove = true;
+            setOnMove(true);
             canvasManager.handleMovement(playerName, 'right');
         } else if (e.keyCode === 32) {
             canvasManager.shoot(playerName, statusDisplay.damage);
@@ -56,7 +81,7 @@ export default function () {
 
     function handleKeyUp(e) {
         if (e.keyCode === 37 || e.keyCode === 39) {
-            onMove = false;
+            setOnMove(false);
             canvasManager.handleMovement(playerName, 'stop');
         }
     }
@@ -73,15 +98,8 @@ export default function () {
                 <div className="game-container__units">
                     <Player name={playerName} updateStatusDisplay={updateStatusDisplay} canvas={canvasManager} />
                     {
-                        enemies.map((enemy, i) => {
-                            return <Enemy key={`${enemy.name}-${i}`} canvas={canvasManager} {...enemy} name={`${enemy.name}-${i}`} />;
-                        })
+                        displayEnemies()
                     }
-                    <Enemy key='enemy-1' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-1' />
-                    <Enemy key='enemy-2' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-2' />
-                    <Enemy key='enemy-3' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-3' />
-                    <Enemy key='enemy-4' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-4' />
-                    <Enemy key='enemy-5' canvas={canvasManager} health={5} damage={1} speed={1} name='enemy-5' />
                 </div>
             </div>
         </div>
