@@ -89,7 +89,7 @@ export default function () {
     return (
         <div className="home">
             <Header title="The Game" />
-            <PlayerInfo {...statusDisplay} />
+            <PlayerInfo {...statusDisplay} level={start ? currentLevel + 1 : '--'} />
             <div className="game-container">
                 <Canvas onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                 {
