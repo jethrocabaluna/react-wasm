@@ -45,8 +45,6 @@ export default function () {
         }
     }
 
-    console.log('outside: ' + currentLevel);
-
     function displayEnemies() {
         if (levels.length && start && currentLevel < levels.length) {
             const enemyElements = [];
