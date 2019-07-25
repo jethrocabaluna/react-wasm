@@ -14,15 +14,31 @@ export const CanvasManager = function (playerName, levelManager) {
     const bullets = {};
     const unitSize = 50;
     const bulletSize = 10;
-    const bulletSpeed = 10;
+    const bulletSpeed = 9.5;
     const bulletHitGap = 5;
 
     let currentLevel = 0;
+
+    let animationId = null;
+
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let name in units) {
+            units[name].update();
+        }
+
+        for (let name in bullets) {
+            bullets[name].forEach(bullet => bullet.update());
+        }
+    }
 
     function displayUnit({name, speed, imageSource, x, y, hurt, enemy, damage}) {
         if (!imageSource) return;
 
         const {pos_x, pos_y} = getPosition({x, y});
+        const randomDirection = Math.random() > 0.5 ? 'right' : 'left';
 
         const image = new Image();
         image.onload = function () {
@@ -41,6 +57,18 @@ export const CanvasManager = function (playerName, levelManager) {
 
         if (enemy) {
             units[name].isEnemy = enemy;
+            units[name].update = () => {
+                moveUnit(name, randomDirection);
+            };
+        } else {
+            units[playerName].direction = 'stop';
+            units[playerName].update = () => {
+                moveUnit(playerName, units[playerName].direction);
+            }
+        }
+
+        if (!animationId) {
+            animate();
         }
     }
 
@@ -63,8 +91,6 @@ export const CanvasManager = function (playerName, levelManager) {
 
     function removeUnit(name) {
         destroyUnit(name);
-        cancelAnimationFrame(units[name].unitMovementId);
-        units[name].unitMovementId = null;
         delete units[name];
         delete bullets[name];
 
@@ -79,28 +105,29 @@ export const CanvasManager = function (playerName, levelManager) {
         ctx.clearRect(units[name].x, units[name].y, unitSize, unitSize);
     }
 
+    function handlePlayerMovement(direction) {
+        units[playerName].direction = direction;
+    }
+
     function handleMovement(name, direction) {
-        units[name].unitMovementId = requestAnimationFrame(() => moveUnit(name, direction));
+        moveUnit(name, direction);
     }
 
     function moveUnit(name, direction) {
-        if ((direction === 'stop' && units[name].unitMovementId) || (units[name].x + unitSize >= canvas.width && direction === 'right') || (units[name].x <= 0 && direction === 'left')) {
-            cancelAnimationFrame(units[name].unitMovementId);
-            units[name].unitMovementId = null;
+        if (direction === 'stop' || (units[name].x + unitSize >= canvas.width && direction === 'right') || (units[name].x <= 0 && direction === 'left')) {
+            return;
         } else {
-            destroyUnit(name);
             let v = direction === 'right' ? units[name].speed : units[name].speed * -1;
             const new_x = units[name].x + v;
             if ((new_x <= 10 || new_x + unitSize >= canvas.width - 10) && units[name].isEnemy) {
                 units[name].speed = units[name].speed * -1;
             }
             units[name].x = new_x;
-            drawUnit(name);
-            if (units[name].isEnemy && units[playerName] && Math.abs(units[name].x - units[playerName].x) < unitSize && (!bullets[name] || !bullets[name][bullets[name].length - 1].bulletAnimationId)) {
+            if (units[name].isEnemy && units[playerName] && Math.abs(units[name].x - units[playerName].x) < unitSize && (!bullets[name] || !bullets[name][bullets[name].length - 1].isActive)) {
                 shoot(name, units[name].damage);
             }
-            units[name].unitMovementId = requestAnimationFrame(() => moveUnit(name, direction));
         }
+        drawUnit(name);
     }
 
     function drawBullet(bullet) {
@@ -119,16 +146,14 @@ export const CanvasManager = function (playerName, levelManager) {
     }
 
     function moveBullet(bullet) {
-        destroyBullet(bullet);
         const new_y = bullet.y + (bullet.fromEnemy ? bulletSpeed : -bulletSpeed);
         bullet.y = new_y;
-        drawBullet(bullet);
         if (new_y <= 0 || new_y >= canvas.height || checkBulletCollision(bullet)) {
-            cancelAnimationFrame(bullet.bulletAnimationId);
-            bullet.bulletAnimationId = null;
+            bullet.isActive = false;
             destroyBullet(bullet);
-        } else {
-            bullet.bulletAnimationId = requestAnimationFrame(() => moveBullet(bullet));
+        } else if (bullet.isActive) {
+            drawBullet(bullet);
+            return;
         }
     }
 
@@ -137,11 +162,17 @@ export const CanvasManager = function (playerName, levelManager) {
             bullets[name] = [];
         }
 
+        const bulletIndex = bullets[name].length;
+
         bullets[name].push(
             {
                 x: units[name].x + unitSize / 2,
                 y: units[name].y + (units[name].isEnemy ? unitSize + (bulletSize / 2) + bulletHitGap : -((bulletSize / 2) + bulletHitGap)),
-                damage
+                damage,
+                isActive: true,
+                update: () => {
+                    moveBullet(bullets[name][bulletIndex]);
+                }
             }
         );
 
@@ -150,8 +181,6 @@ export const CanvasManager = function (playerName, levelManager) {
         }
 
         drawBullet(bullets[name][bullets[name].length - 1]);
-
-        bullets[name][bullets[name].length - 1].bulletAnimationId = requestAnimationFrame(() => moveBullet(bullets[name][bullets[name].length - 1]));
     }
 
     function checkBulletCollision(bullet) {
@@ -168,6 +197,7 @@ export const CanvasManager = function (playerName, levelManager) {
     return {
         displayUnit,
         handleMovement,
+        handlePlayerMovement,
         shoot,
         removeUnit
     }

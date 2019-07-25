@@ -11,11 +11,6 @@ export default React.memo(function ({ name, description, health, damage, speed, 
         enemy.hurt(damage);
     }
 
-    function startMoving() {
-        let direction = Math.random() > 0.5 ? 'right' : 'left';
-        canvas.handleMovement(name, direction);
-    }
-
     if (enemy.status.health <= 0 && enemy.status.life <= 0) {
         canvas.removeUnit(name);
     }
@@ -29,7 +24,6 @@ export default React.memo(function ({ name, description, health, damage, speed, 
             enemy: true,
             damage
         });
-        startMoving();
         setOnGame(true);
     }
 

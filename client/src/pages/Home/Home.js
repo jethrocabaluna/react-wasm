@@ -68,10 +68,10 @@ export default function () {
     function handleKeyDown(e) {
         if (e.keyCode === 37 && !onMove) {
             setOnMove(true);
-            canvasManager.handleMovement(playerName, 'left');
+            canvasManager.handlePlayerMovement('left');
         } else if (e.keyCode === 39 && !onMove) {
             setOnMove(true);
-            canvasManager.handleMovement(playerName, 'right');
+            canvasManager.handlePlayerMovement('right');
         } else if (e.keyCode === 32) {
             canvasManager.shoot(playerName, statusDisplay.damage);
         }
@@ -80,7 +80,7 @@ export default function () {
     function handleKeyUp(e) {
         if (e.keyCode === 37 || e.keyCode === 39) {
             setOnMove(false);
-            canvasManager.handleMovement(playerName, 'stop');
+            canvasManager.handlePlayerMovement('stop');
         }
     }
 
