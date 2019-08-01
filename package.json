@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
+    "install:client": "cd client && npm install",
     "compile": "webpack --config webpack.config.js",
-    "dev": "npm run compile && npm run start"
+    "build": "npm run install:client && npm run compile",
+    "dev": "npm run build && npm run start",
+    "prod": "npm run build && node index.js"
   },
   "author": "Jethro Cabaluna",
   "license": "ISC",
