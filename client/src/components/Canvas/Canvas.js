@@ -114,9 +114,7 @@ export const CanvasManager = function (playerName, levelManager) {
     }
 
     function moveUnit(name, direction) {
-        if (direction === 'stop' || (units[name].x + unitSize >= canvas.width && direction === 'right') || (units[name].x <= 0 && direction === 'left')) {
-            return;
-        } else {
+        if (!(direction === 'stop' || (units[name].x + unitSize >= canvas.width && direction === 'right') || (units[name].x <= 0 && direction === 'left'))) {
             let v = direction === 'right' ? units[name].speed : units[name].speed * -1;
             const new_x = units[name].x + v;
             if ((new_x <= 10 || new_x + unitSize >= canvas.width - 10) && units[name].isEnemy) {

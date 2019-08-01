@@ -7,7 +7,7 @@ import Home from 'Pages/Home/Home';
 import 'Styles/index.scss'
 
 const client = new ApolloClient({
-    uri: 'http://localhost:3000/graphql'
+    uri: process.env.API_URL
 });
 
 export default function App() {

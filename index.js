@@ -1,16 +1,17 @@
 const keystone = require('keystone');
+require('dotenv').config();
 
 keystone.init({
-    'name': 'Wasm React',
+    'name': 'React Game',
     'static': [
         './server/public/js/',
         './server/public/img/'
     ],
     'auto update': true,
-    'mongo': 'mongodb://localhost/wasm_react',
+    'mongo': process.env.MONGODB_URI,
     'auth': true,
     'user model': 'User',
-    'cookie secret': 'SECRET'
+    'cookie secret': process.env.MONGODB_SECRETKEY
 });
 
 keystone.import('./server/models');

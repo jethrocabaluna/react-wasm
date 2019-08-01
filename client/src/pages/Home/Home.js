@@ -6,7 +6,7 @@ import Canvas, { CanvasManager } from 'Components/Canvas/Canvas';
 import Player from 'Components/Player/Player';
 import Enemy from 'Components/Enemy/Enemy';
 
-const OBJECTS_QUERY = '{enemies {name,image,description,health,damage,speed} powerUps {name,description,color,effect} levels {name,description,levelNumber,fascist,hitler,weakling}}';
+const OBJECTS_QUERY = '{enemies {name,image,description,health,damage,speed} powerUps {name,description,color,effect} levels {name,description,levelNumber,noob,spaceship,thanos}}';
 
 const playerName = 'Jethro';
 

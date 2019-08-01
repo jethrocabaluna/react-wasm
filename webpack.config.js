@@ -13,8 +13,7 @@ module.exports = {
             Components: path.resolve('./client/src/components/'),
             Pages: path.resolve('./client/src/pages/'),
             Styles: path.resolve('./client/src/styles'),
-            Scripts: path.resolve('./client/src/scripts'),
-            Cpp: path.resolve('./client/src/cpp')
+            Scripts: path.resolve('./client/src/scripts')
         }
     },
     module: {
@@ -35,32 +34,6 @@ module.exports = {
                     'css-loader',
                     'sass-loader'
                 ]
-            },
-            {
-                test: /\.(c|cpp)$/,
-                use: {
-                    loader: 'cpp-wasm-loader',
-                    options: {
-                        emccFlags: [
-                            '-s',
-                            'ERROR_ON_UNDEFINED_SYMBOLS=0',
-                            '-s',
-                            'USE_PTHREADS=1',
-                            '-s',
-                            'PTHREAD_POOL_SIZE=2'
-                        ],
-                        fullEnv: true
-                    }
-                }
-            },
-            {
-                test: /\.mjs$/,
-                include: /node_modules/,
-                type: "javascript/auto",
-            },
-            {
-                test: /\.wasm$/,
-                type: "javascript/auto"
             }
         ]
     },

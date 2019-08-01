@@ -45,9 +45,9 @@ const LevelType = new GraphQLObjectType({
         name: { type: GraphQLString },
         description: { type: GraphQLString },
         levelNumber: { type: GraphQLInt },
-        fascist: { type: GraphQLInt },
-        hitler: { type: GraphQLInt },
-        weakling: { type: GraphQLInt }
+        noob: { type: GraphQLInt },
+        spaceship: { type: GraphQLInt },
+        thanos: { type: GraphQLInt }
     })
 });
 
@@ -57,7 +57,7 @@ const RootQuery = new GraphQLObjectType({
         images: {
             type: new GraphQLList(ImageType),
             resolve(parent, args) {
-                return fetch('http://localhost:3000/api/images/list')
+                return fetch(`${process.env.BASE_URL}/api/images/list`)
                     .then(res => res.json())
                     .then(data => data);
             }
@@ -65,7 +65,7 @@ const RootQuery = new GraphQLObjectType({
         enemies: {
             type: new GraphQLList(EnemyType),
             resolve(parent, args) {
-                return fetch('http://localhost:3000/api/enemies/list')
+                return fetch(`${process.env.BASE_URL}/api/enemies/list`)
                     .then(res => res.json())
                     .then(data => data);
             }
@@ -73,7 +73,7 @@ const RootQuery = new GraphQLObjectType({
         powerUps: {
             type: new GraphQLList(PowerUpType),
             resolve(parent, args) {
-                return fetch('http://localhost:3000/api/powerUps/list')
+                return fetch(`${process.env.BASE_URL}/api/powerUps/list`)
                     .then(res => res.json())
                     .then(data => data);
             }
@@ -81,7 +81,7 @@ const RootQuery = new GraphQLObjectType({
         levels: {
             type: new GraphQLList(LevelType),
             resolve(parent, args) {
-                return fetch('http://localhost:3000/api/levels/list')
+                return fetch(`${process.env.BASE_URL}/api/levels/list`)
                     .then(res => res.json())
                     .then(data => data);
             }
