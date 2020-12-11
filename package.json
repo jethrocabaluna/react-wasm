@@ -20,7 +20,7 @@
     "graphql": "^14.1.1",
     "graphql-type-json": "^0.2.1",
     "keystone": "^4.2.1",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
